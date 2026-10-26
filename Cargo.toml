@@ -1,0 +1,33 @@
+[package]
+name = "loa-font-studio"
+version = "0.2.0"
+edition = "2024"
+description = "Native Lost Ark font.lpk editor and installer"
+license = "MIT"
+
+[dependencies]
+aes = "0.9"
+anyhow = "1"
+blowfish = "0.10"
+dirs = "7"
+eframe = { version = "0.37", default-features = false, features = [
+    "clipboard",
+    "default_fonts",
+    "glow",
+    "wayland",
+    "x11",
+] }
+flate2 = "1"
+md-5 = "0.11"
+rfd = { version = "0.17", default-features = false, features = ["xdg-portal"] }
+roxmltree = "0.21"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.11"
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.56"
+
+[profile.release]
+lto = true
+strip = true
