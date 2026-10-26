@@ -476,6 +476,7 @@ impl FontStudioApp {
             return;
         };
 
+        let first_font = self.fonts.is_empty();
         let mut added = 0;
         let mut skipped = Vec::new();
         for path in paths {
@@ -489,9 +490,16 @@ impl FontStudioApp {
         }
 
         if added > 0 {
-            if self.fontmap_rows.is_empty() {
+            if first_font {
                 if let Some(font) = self.fonts.first() {
-                    self.fontmap_rows = default_rows(font.name.trim());
+                    let name = font.name.trim().to_string();
+                    if self.fontmap_rows.is_empty() {
+                        self.fontmap_rows = default_rows(&name);
+                    } else {
+                        for row in &mut self.fontmap_rows {
+                            row.file = name.clone();
+                        }
+                    }
                 }
             } else {
                 self.sync_fontmap_to_fonts();
@@ -841,8 +849,6 @@ impl FontStudioApp {
                     .stroke(Stroke::new(1.0, BORDER)),
             )
             .show(root, |ui| {
-                ui.label(RichText::new("WORKSPACE").size(10.0).color(MUTED));
-                ui.add_space(6.0);
                 nav_button(ui, &mut self.page, Page::Fonts, "Fonts");
                 nav_button(ui, &mut self.page, Page::BuildInstall, "Build & install");
                 nav_button(ui, &mut self.page, Page::Extract, "Extract archive");
@@ -922,7 +928,7 @@ impl FontStudioApp {
             ui.add_space(6.0);
             ui.label(
                 RichText::new(
-                    r"Each language uses \Binaries\Fonts\<Language>\FontMap.xml. The file at \Binaries\Fonts\FontMap.xml is the Korean/root fallback.",
+                    r"Each language uses \Binaries\Fonts\<Language>\FontMap.xml. The file at \Binaries\Fonts\FontMap.xml is for Korean",
                 )
                 .color(MUTED)
                 .size(12.0),
@@ -956,7 +962,7 @@ impl FontStudioApp {
                         ),
                         (
                             "LeadingCorrection",
-                            "Line spacing adjustment: 0 is normal and negative values tighten the lines.",
+                            "Line spacing adjustment: 0 is normal, negative values tighten the lines, and positive values widen the gap between lines.",
                         ),
                     ] {
                         ui.label(RichText::new(name).monospace().color(ACCENT));
@@ -964,14 +970,6 @@ impl FontStudioApp {
                         ui.end_row();
                     }
                 });
-            ui.add_space(6.0);
-            ui.label(
-                RichText::new(
-                    "When SizeCorrectionRatio or LeadingCorrection is omitted, the game uses 100 or 0.",
-                )
-                .color(MUTED)
-                .size(11.0),
-            );
         });
 
         ui.add_space(10.0);
@@ -1136,14 +1134,6 @@ impl FontStudioApp {
                     self.pick_game_dir();
                 }
             });
-            ui.add_space(4.0);
-            ui.label(
-                RichText::new(
-                    "Install is optional. You can build a package without the game installed.",
-                )
-                .color(MUTED)
-                .size(11.0),
-            );
         });
 
         if profile_label != self.profile.label {
@@ -1168,15 +1158,6 @@ impl FontStudioApp {
         let mut clear_fonts = false;
 
         card(ui, "Fonts", |ui| {
-            ui.label(
-                RichText::new(
-                    "Every FontMap row can use any font in this list. Fonts are stored in the selected language folder using the name shown here.",
-                )
-                .color(MUTED)
-                .size(12.0),
-            );
-            ui.add_space(6.0);
-
             if self.fonts.is_empty() {
                 ui.label(RichText::new("No fonts added yet.").color(ORANGE));
             } else {
@@ -1297,15 +1278,6 @@ impl FontStudioApp {
         let mut remove = None;
 
         card(ui, "FontMap rows", |ui| {
-            ui.label(
-                RichText::new(
-                    "Size 120 = 20% larger, 80 = 20% smaller. Leading -200 tightens line spacing.",
-                )
-                .color(MUTED)
-                .size(12.0),
-            );
-            ui.add_space(6.0);
-
             if self.fontmap_rows.is_empty() {
                 ui.label(
                     RichText::new("No rows yet. Add a row or load the defaults from the game.")
@@ -1379,13 +1351,6 @@ impl FontStudioApp {
                     self.import_fontmap();
                 }
             });
-            ui.label(
-                RichText::new(
-                    "Load defaults from game reads FontMap.xml from the game archive (preferring font.lpk.bak) and keeps its keys and corrections.",
-                )
-                .color(MUTED)
-                .size(11.0),
-            );
         });
 
         if let Some(index) = remove
