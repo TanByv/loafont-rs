@@ -1,6 +1,6 @@
 # LOA Font Studio
 
-LOA Font Studio is a native desktop editor for the `font.lpk` archive used by Lost Ark. It lets you replace the game's fonts, edit the `FontMap.xml` entries that control text styles, and build a valid archive without QuickBMS scripts or manual hex editing.
+LOA Font Studio is a native modding tool for the `font.lpk` archive used by Lost Ark. It lets you replace the game's fonts, edit the `FontMap.xml` entries that control text styles, and build a valid archive without QuickBMS scripts or manual hex editing.
 
 The app can also install a finished package into the game folder, keep a backup of the original file, and restore it later.
 
@@ -22,6 +22,16 @@ Supported language folders: **English**, Spanish**, French**, German**, Russian*
 *: Untested, contributions are welcome.
 
 **: Unused language folders, Steam (Global) uses English folder.
+
+## Screenshots
+
+### Main GUI
+
+![GUI Screenshot](assets/ui.jpg)
+
+### In-game Showcase (FiraCode-Bold Font)
+
+![In-game Font Example](assets/ingame.jpg)
 
 ## Installation
 
@@ -52,7 +62,7 @@ sudo apt install build-essential pkg-config libx11-dev libxkbcommon-dev libwayla
 1. Start the app and select the game profile and language.
 2. If the game is installed, use Detect or Browse to select the `EFGame` folder. This is optional when you only want to build a package.
 3. Add your font files on the Fonts tab. The name shown under "Name in archive" is the file name stored in `font.lpk`; keep the `.ttf` extension.
-4. Adjust the FontMap rows. Size 120 means 20% larger, 80 means 20% smaller. A leading value of -200 tightens line spacing.
+4. Adjust the FontMap rows to your liking.
 5. Choose an output path, then use Build only or Build and install.
 6. Use Restore original at any time to put `font.lpk.bak` back in place.
 
