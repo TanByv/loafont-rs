@@ -15,13 +15,13 @@ The app can also install a finished package into the game folder, keep a backup 
 - Restore the original archive from the app.
 - Remember settings between launches.
 
-Supported client profiles: **Steam (Global)**, Russia*, Japan*, Taiwan*, Korea*, and China*.
+Supported client profiles: Steam (Global), Russia*, Japan*, Taiwan*, Korea*, and China*.
 
-Supported language folders: **English**, Spanish**, French**, German**, Russian*, Japanese**, Chinese*, Taiwanese*, and Korean*.
+Supported language folders: English, Spanish**, French**, German**, Russian*, Japanese**, Chinese*, Taiwanese*, and Korean*.
 
-*: Untested, contributions are welcome.
+*: Untested, feedback needed.
 
-**: Unused language folders, Steam (Global) uses English folder.
+**: Discontinued language folders, Steam (Global) uses English folder.
 
 ## Screenshots
 
@@ -33,9 +33,9 @@ Supported language folders: **English**, Spanish**, French**, German**, Russian*
 
 ![In-game Font Example](assets/ingame.jpg)
 
-## Installation
+## Download & Building
 
-**Download the latest release from the repository's Releases page and run the binary for your platform.**
+**Download the latest release from the [repository's releases page](https://github.com/TanByv/loafont-rs/releases) and run the binary for your platform.**
 
 To build from source, install the Rust toolchain (edition 2024 requires Rust 1.85 or newer), then run:
 
@@ -60,19 +60,23 @@ sudo apt install build-essential pkg-config libx11-dev libxkbcommon-dev libwayla
 ## Usage
 
 1. Start the app and select the game profile and language.
-2. If the game is installed, use Detect or Browse to select the `EFGame` folder. This is optional when you only want to build a package.
-3. Add your font files on the Fonts tab. The name shown under "Name in archive" is the file name stored in `font.lpk`; keep the `.ttf` extension.
+2. If the game is installed, use Detect or Browse to select the `EFGame` folder. (Not required if you don't want to install the modded `font.lpk`)
+3. Add your font files on the Fonts tab.
 4. Adjust the FontMap rows to your liking.
 5. Choose an output path, then use Build only or Build and install.
 6. Use Restore original at any time to put `font.lpk.bak` back in place.
 
-Close the game before installing or restoring files.
+**Close the game before installing or restoring files!**
 
-## Backups and safety
+## Backups & Game Updates
 
 Before the first install, the app copies the current `font.lpk` to `font.lpk.bak` in the same folder. It also records the installed archive hash in `font.lpk.modinfo.json` so it can tell whether the game is already modded.
 
-Build only never modifies the game folder. If a backup is missing and the game files are in an unknown state, use "Verify integrity of game files" in Steam before installing again.
+"Build only" never modifies the game folder. If a backup is missing and the game files are in an unknown state, use "Verify integrity of game files" in Steam before installing again.
+
+Steam might replace the modded `font.lpk` file with the original when you update the game or trigger an automatic "Verify integrity of game files" which will require you to install the modded `font.lpk` again in both cases. 
+
+To avoid game file verification, which can take a while, use the "Restore original" functionality before updating the game and install the modded `font.lpk` again after updating your game.
 
 ## How it works
 
@@ -83,45 +87,10 @@ A Lost Ark `font.lpk` is an LPK archive:
 - Some entries use AES-256-CBC with a per-entry key derived from the file name and a client-specific base value.
 - `FontMap.xml` maps game text-style keys such as `$YG760` to font files and correction values.
 
-The implementation follows the behavior of the original QuickBMS extraction script.
-
-## Project layout
-
-```text
-src/app.rs        Egui interface and application state
-src/lpk.rs        LPK archive reading and writing
-src/crypto.rs     Blowfish, AES, and key derivation
-src/fontmap.rs    FontMap.xml parsing, validation, and generation
-src/game.rs       Steam detection, install, backup, and restore
-src/settings.rs   Persisted user settings
-tests/unit/       Unit tests included by the source modules
-```
-
-## Development
-
-Run the test suite with:
-
-```bash
-cargo test
-```
-
-Run the app from source with:
-
-```bash
-cargo run
-```
-
-Formatting and linting use the standard Rust tools:
-
-```bash
-cargo fmt
-cargo clippy
-```
-
 ## Disclaimer
 
-This is an unofficial community tool. It is not affiliated with Smilegate or Amazon Games. Modifying game files can break the game or violate its terms of service. Use it at your own risk, and keep the original backup.
+This is an unofficial community tool. It is not affiliated with Smilegate or Amazon Games. Modifying game files can break the game or violate its terms of service. Use it at your own risk.
 
 ## License
 
-MIT.
+MIT
